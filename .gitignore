@@ -1,0 +1,16 @@
+# Dépendances
+node_modules/
+
+# Artefacts générés par Cypress lors des exécutions
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
+
+# Notes de travail personnelles (non publiées)
+PLAN.md
+Instructions.txt
+
+# Fichiers système / éditeur
+.DS_Store
+Thumbs.db
+.vscode/
