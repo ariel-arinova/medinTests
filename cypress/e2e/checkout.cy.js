@@ -15,8 +15,12 @@ describe("Parcours de commande", () => {
   let users;
   let products;
   let customer;
+  let password;
 
   beforeEach(() => {
+    cy.env(["password"]).then((env) => {
+      password = env.password;
+    });
     cy.fixture("users").then((data) => {
       users = data;
     });
@@ -32,7 +36,7 @@ describe("Parcours de commande", () => {
     const items = () => [products.backpack, products.bikeLight];
 
     loginPage.visit();
-    loginPage.login(users.standard.username, users.standard.password);
+    loginPage.login(users.standard.username, password);
     inventoryPage.shouldBeDisplayed();
 
     items().forEach((product) => inventoryPage.addToCart(product));
