@@ -1,3 +1,16 @@
+import loginPage from "../pages/LoginPage";
+import inventoryPage from "../pages/InventoryPage";
+import cartPage from "../pages/CartPage";
+import checkoutInfoPage from "../pages/CheckoutInfoPage";
+import checkoutOverviewPage from "../pages/CheckoutOverviewPage";
+import checkoutCompletePage from "../pages/CheckoutCompletePage";
+
+const TAX_RATE = 0.08;
+
+// Calculs en centimes pour éviter les erreurs d'arrondi des décimales.
+const toCents = (price) => Math.round(parseFloat(price.replace("$", "")) * 100);
+const toPrice = (cents) => `$${(cents / 100).toFixed(2)}`;
+
 describe("Parcours de commande", () => {
   let users;
   let products;
@@ -16,57 +29,28 @@ describe("Parcours de commande", () => {
   });
 
   it("commande 2 articles et affiche la confirmation", () => {
-    // Connexion
-    cy.visit("/");
-    cy.get('[data-test="username"]').type(users.standard.username);
-    cy.get('[data-test="password"]').type(users.standard.password);
-    cy.get('[data-test="login-button"]').click();
-    cy.url().should("include", "/inventory.html");
+    const items = () => [products.backpack, products.bikeLight];
 
-    // Ajout de 2 articles
-    cy.get(`[data-test="add-to-cart-${products.backpack.id}"]`).click();
-    cy.get(`[data-test="add-to-cart-${products.bikeLight.id}"]`).click();
-    cy.get('[data-test="shopping-cart-badge"]').should("have.text", "2");
+    loginPage.visit();
+    loginPage.login(users.standard.username, users.standard.password);
+    inventoryPage.shouldBeDisplayed();
 
-    // Vérification du panier
-    cy.get('[data-test="shopping-cart-link"]').click();
-    cy.url().should("include", "/cart.html");
-    cy.get('[data-test="inventory-item"]').should("have.length", 2);
-    //forEach pour vérifier le nom et le prix de chaque produit dans le panier quel que soit l'ordre d'apparition
-    [products.backpack, products.bikeLight].forEach((product) => {
-      cy.contains('[data-test="inventory-item"]', product.name)
-        .find('[data-test="inventory-item-price"]')
-        .should("have.text", product.price);
-    });
+    items().forEach((product) => inventoryPage.addToCart(product));
+    inventoryPage.cartBadgeShouldHaveCount(2);
 
-    // Informations de livraison
-    cy.get('[data-test="checkout"]').click();
-    cy.url().should("include", "/checkout-step-one.html");
-    cy.get('[data-test="firstName"]').type(customer.firstName);
-    cy.get('[data-test="lastName"]').type(customer.lastName);
-    cy.get('[data-test="postalCode"]').type(customer.postalCode);
-    cy.get('[data-test="continue"]').click();
+    inventoryPage.openCart();
+    cartPage.shouldBeDisplayed();
+    cartPage.shouldContain(items());
 
-    // Récapitulatif
-    cy.url().should("include", "/checkout-step-two.html");
-    cy.get('[data-test="inventory-item"]').should("have.length", 2);
-    [products.backpack, products.bikeLight].forEach((product) => {
-      cy.contains('[data-test="inventory-item"]', product.name)
-        .find('[data-test="inventory-item-price"]')
-        .should("have.text", product.price);
-    });
-    cy.get('[data-test="subtotal-label"]').should(
-      "have.text",
-      "Item total: $39.98",
-    );
-    cy.get('[data-test="total-label"]').should("have.text", "Total: $43.18");
-    cy.get('[data-test="finish"]').click();
+    cartPage.checkout();
+    checkoutInfoPage.shouldBeDisplayed();
+    checkoutInfoPage.fillCustomerInfo(customer);
 
-    // Confirmation
-    cy.url().should("include", "/checkout-complete.html");
-    cy.get('[data-test="complete-header"]').should(
-      "have.text",
-      "Thank you for your order!",
-    );
+    const subtotal = items().reduce((sum, product) => sum + toCents(product.price), 0);
+    const total = subtotal + Math.round(subtotal * TAX_RATE);
+    checkoutOverviewPage.shouldShow(items(), toPrice(subtotal), toPrice(total));
+    checkoutOverviewPage.finish();
+
+    checkoutCompletePage.shouldShowConfirmation();
   });
 });
