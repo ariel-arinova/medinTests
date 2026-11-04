@@ -38,6 +38,7 @@ describe("Parcours de commande", () => {
     loginPage.visit();
     loginPage.login(users.standard.username, password);
     inventoryPage.shouldBeDisplayed();
+    inventoryPage.shouldListProducts(items());
 
     items().forEach((product) => inventoryPage.addToCart(product));
     inventoryPage.cartBadgeShouldHaveCount(2);

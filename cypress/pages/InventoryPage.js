@@ -1,7 +1,14 @@
+import { shouldShowProductDetails } from "./ProductDetails";
+
 class InventoryPage {
   shouldBeDisplayed() {
     cy.url().should("include", "/inventory.html");
     cy.get('[data-test="title"]').should("have.text", "Products");
+  }
+
+  // Le catalogue contient d'autres produits : on vérifie seulement ceux demandés.
+  shouldListProducts(products) {
+    products.forEach(shouldShowProductDetails);
   }
 
   addToCart(product) {
