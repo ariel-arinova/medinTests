@@ -49,6 +49,7 @@ cypress/
 ├── fixtures/       # données de test : utilisateurs, produits, client, taux de taxe
 └── support/
     ├── price.js    # calcul du récapitulatif attendu (sous-total, taxe, total)
+    └── e2e.js      # chargé avant chaque spec
 cypress.config.js   # URL de base, taille d'écran
 cypress.env.json    # mot de passe
 ```
