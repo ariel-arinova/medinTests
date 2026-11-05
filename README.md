@@ -46,6 +46,7 @@ Connexion d'un utilisateur standard et arrivée sur l'inventaire.
 cypress/
 ├── e2e/            # les scénarios (ce que l'on teste)
 ├── pages/          # un Page Object par page du site (comment on interagit)
+│   └── components/ # blocs communs à plusieurs pages (fiche produit)
 ├── fixtures/       # données de test : utilisateurs, produits, client, taux de taxe
 └── support/
     ├── price.js    # calcul du récapitulatif attendu (sous-total, taxe, total)

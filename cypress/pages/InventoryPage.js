@@ -1,4 +1,4 @@
-import { shouldShowProductDetails } from "./ProductDetails";
+import { shouldShowProductDetails } from "./components/ProductDetails";
 
 class InventoryPage {
   shouldBeDisplayed() {
