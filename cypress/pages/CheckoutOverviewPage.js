@@ -1,9 +1,12 @@
 import { shouldShowProductDetails } from "./ProductDetails";
 
 class CheckoutOverviewPage {
+  shouldBeDisplayed() {
+    cy.url().should("include", "/checkout-step-two.html");
+  }
+
   // summary : { subtotal, tax, total }, voir computeOrderSummary (support/price.js).
   shouldShow(products, summary) {
-    cy.url().should("include", "/checkout-step-two.html");
     cy.get('[data-test="inventory-item"]').should("have.length", products.length);
     products.forEach(shouldShowProductDetails);
     cy.get('[data-test="subtotal-label"]').should("have.text", `Item total: ${summary.subtotal}`);

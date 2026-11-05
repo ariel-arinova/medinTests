@@ -50,9 +50,11 @@ describe("Parcours de commande", () => {
     checkoutInfoPage.shouldBeDisplayed();
     checkoutInfoPage.fillCustomerInfo(customer);
 
+    checkoutOverviewPage.shouldBeDisplayed();
     checkoutOverviewPage.shouldShow(items, computeOrderSummary(items, pricing.taxRate));
     checkoutOverviewPage.finish();
 
+    checkoutCompletePage.shouldBeDisplayed();
     checkoutCompletePage.shouldShowConfirmation();
   });
 });
