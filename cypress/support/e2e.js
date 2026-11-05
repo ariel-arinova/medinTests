@@ -1,3 +1,2 @@
 // Chargé automatiquement avant chaque fichier de test.
-// On y importe nos commandes personnalisées.
-import './commands';
+// Vide pour l'instant : aucune commande personnalisée n'est nécessaire.
